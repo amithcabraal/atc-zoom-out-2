@@ -36,8 +36,14 @@ const GameMap: React.FC<GameMapProps> = ({ center, zoom, targetCity, guesses, ga
     iconAnchor: [12, 41],
   });
 
-  const correctIcon = new Icon({
+  const targetIcon = new Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+  });
+
+  const targetPinIcon = new Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
   });
@@ -50,17 +56,26 @@ const GameMap: React.FC<GameMapProps> = ({ center, zoom, targetCity, guesses, ga
         className="w-full h-full rounded-lg"
         zoomControl={false}
         attributionControl={false}
-        dragging={false}
+        dragging={true}
         scrollWheelZoom={false}
         doubleClickZoom={false}
       >
         <MapController maxZoom={zoom} center={center} gameOver={gameOver} />
         <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
         
+        {targetCity && !gameOver && (
+          <Marker 
+            position={[targetCity.latitude, targetCity.longitude]}
+            icon={targetPinIcon}
+          >
+            <Popup>Target Location</Popup>
+          </Marker>
+        )}
+
         {gameOver && targetCity && (
           <Marker 
             position={[targetCity.latitude, targetCity.longitude]}
-            icon={correctIcon}
+            icon={targetIcon}
           >
             <Popup>
               <strong>Correct City:</strong> {targetCity.name}
